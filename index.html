@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic System Info</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+    <title>System Info Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,48 +13,53 @@
             background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ed 100%);
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             min-height: 100vh;
-            padding: 1.5rem;
+            padding: 1.25rem; /* Converted from 20px to rem */
             box-sizing: border-box;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.3); /* Increased transparency for more contrast against background */
             border-radius: 20px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15); /* Stronger, more defined shadow */
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.4); /* More visible border */
+            padding: 2rem; /* Converted from 32px to rem */
             max-width: 1000px;
             width: 100%;
             display: grid;
-            gap: 1.5rem;
+            gap: 1.25rem; /* Converted from 20px to rem */
             grid-template-columns: repeat(1, minmax(0, 1fr));
             transition: box-shadow 0.3s ease;
         }
         @media (min-width: 640px) {
             .container {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1.25rem; /* Consistent rem for gap */
             }
         }
         @media (min-width: 1024px) {
             .container {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-columns: repeat(4, minmax(0, 1fr));
             }
         }
-
+        @media (min-width: 1280px) {
+            .container {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
         .card {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.2); /* Increased transparency for more contrast */
             border-radius: 15px;
-            padding: 1.25rem;
+            padding: 1.25rem; /* Converted from 20px to rem */
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 150px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow for cards */
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -69,6 +74,7 @@
             font-weight: 500;
             color: #444;
             margin-bottom: 0.6rem;
+            transition: color 0.3s ease;
         }
         .card-value {
             font-size: 1.75rem;
@@ -78,11 +84,13 @@
             align-items: center;
             justify-content: center;
             gap: 0.2rem;
+            transition: color 0.3s ease;
         }
         .card-sub-value {
             font-size: 0.8rem;
             color: #666;
             margin-top: 0.3rem;
+            transition: color 0.3s ease;
         }
         .weather-icon {
             font-size: 1.8rem;
@@ -119,10 +127,139 @@
             padding-bottom: 0.8rem;
             border-bottom: 1px solid rgba(0,0,0,0.2);
         }
+
+        /* Styles for expandable sections */
+        .expandable-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            text-align: left;
+            min-height: auto;
+            padding: 0;
+            grid-column: span 1; /* Default to 1 column span */
+        }
+        /* Make expandable cards span 2 columns on medium screens and up */
+        @media (min-width: 640px) {
+            .expandable-card {
+                grid-column: span 2;
+            }
+        }
+        /* Make expandable cards span 2 columns on large screens and up, if 3-column layout */
+        @media (min-width: 1024px) {
+            .expandable-card {
+                grid-column: span 2;
+            }
+        }
+        /* Make expandable cards span 2 columns on very large screens, if 4-column layout */
+        @media (min-width: 1280px) {
+            .expandable-card {
+                grid-column: span 2;
+            }
+        }
+        /* Specific span for the System Details card to be full width on smaller screens */
+        .system-details-card {
+            grid-column: 1 / -1; /* Span all columns */
+        }
+
+
+        .expandable-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #444;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            transition: background-color 0.2s ease, color 0.3s ease;
+        }
+        .expandable-header:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 0 1.25rem;
+            color: #666;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        .expandable-content.expanded {
+            max-height: 500px; /* Adjust as needed for content height */
+            padding: 1.25rem;
+        }
+        .expand-icon {
+            transition: transform 0.3s ease;
+        }
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+        }
+        .process-list, .interface-list, .system-details-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
+        .process-item, .interface-item, .system-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.05);
+        }
+        .process-item:last-child, .interface-item:last-child, .system-detail-item:last-child {
+            border-bottom: none;
+        }
+        .process-name, .interface-name, .system-detail-label {
+            font-weight: 500;
+            color: #333;
+            flex-grow: 1;
+            text-align: left;
+            padding-right: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .process-stats, .interface-stats, .system-detail-value {
+            text-align: right;
+            flex-shrink: 0;
+            color: #2563eb;
+        }
+        .interface-ip {
+            display: block;
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        /* Chart specific styles */
+        .chart-card {
+            min-height: 250px; /* Ensure charts have enough height */
+            padding: 1rem;
+            grid-column: span 1; /* Default to 1 column span */
+        }
+        @media (min-width: 640px) {
+            .chart-card {
+                grid-column: span 1; /* On small screens, charts can take 1 column */
+            }
+        }
+        @media (min-width: 1024px) {
+            .chart-card {
+                grid-column: span 1; /* On large screens, charts can take 1 column */
+            }
+        }
+        /* Make the Disk I/O chart span 2 columns on larger layouts if needed */
+        @media (min-width: 1024px) {
+            .disk-io-chart-card {
+                grid-column: span 2; /* Span 2 columns on larger screens for better visibility */
+            }
+        }
+
         .nav-link {
             grid-column: 1 / -1;
             text-align: center;
-            margin-top: 1.5rem;
+            margin-bottom: 1.5rem; /* Margin below for advanced page */
         }
         .nav-link a {
             display: inline-block;
@@ -140,6 +277,8 @@
             transform: translateY(-2px);
         }
 
+
+        /* Dark mode styles */
         @media (prefers-color-scheme: dark) {
             body {
                 background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
@@ -173,6 +312,32 @@
                 color: #f5f5f5;
                 border-bottom: 1px solid rgba(255,255,255,0.2);
             }
+            .expandable-header {
+                color: #f5f5f5;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            }
+            .expandable-header:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            .expandable-content {
+                color: #d4d4d4;
+            }
+            .process-name, .interface-name, .system-detail-label {
+                color: #f5f5f5;
+            }
+            .process-item, .interface-item, .system-detail-item {
+                border-bottom: 1px dashed rgba(255,255,255,0.05);
+            }
+            .process-stats, .interface-stats, .system-detail-value {
+                color: #93c5fd;
+            }
+            .interface-ip {
+                color: #b0b0b0;
+            }
+            /* Chart dark mode colors */
+            .chart-card canvas {
+                background-color: transparent; /* Charts should have transparent background to show card blur */
+            }
             .nav-link a {
                 background-color: rgba(255, 255, 255, 0.1);
                 color: #93c5fd;
@@ -186,7 +351,7 @@
 </head>
 <body>
     <main class="container">
-        <div id="current-day-date" class="day-date"></div>
+        <!-- Removed Date Display -->
 
         <div class="card">
             <h2 class="card-title">CPU Usage</h2>
@@ -207,12 +372,6 @@
         </div>
 
         <div class="card">
-            <h2 class="card-title">Disk Usage</h2>
-            <div id="disk-percent" class="card-value">--%</div>
-            <div id="disk-used-total" class="card-sub-value">Used: -- GB / Total: -- GB</div>
-        </div>
-
-        <div class="card">
             <h2 class="card-title">Network Speed</h2>
             <div class="network-speed-item text-green-600">
                 <span class="network-speed-icon">⬆️</span>
@@ -228,15 +387,9 @@
         </div>
 
         <div class="card">
-            <h2 class="card-title">Disk I/O</h2>
-            <div class="network-speed-item text-purple-600">
-                <span class="network-speed-icon">Read:</span>
-                <span id="disk-read-speed-value" class="network-speed-value-text">-- MiB/s</span>
-            </div>
-            <div class="network-speed-item text-orange-600">
-                <span class="network-speed-icon">Write:</span>
-                <span id="disk-write-speed-value" class="network-speed-value-text">-- MiB/s</span>
-            </div>
+            <h2 class="card-title">Total Storage</h2>
+            <div id="disk-percent" class="card-value">--%</div>
+            <div id="disk-used-total" class="card-sub-value">Used: -- GB / Total: -- GB</div>
         </div>
 
         <div class="card">
@@ -247,184 +400,33 @@
             <div id="weather-city" class="card-sub-value"></div>
         </div>
 
-        <div class="nav-link">
-            <a href="advanced_dashboard.html">Go to Advanced Dashboard →</a>
+        <!-- Top Processes Card (Expandable) -->
+        <div class="card expandable-card">
+            <div class="expandable-header" id="processes-header">
+                <span>Top Processes (CPU)</span>
+                <span class="expand-icon">▼</span>
+            </div>
+            <div class="expandable-content" id="processes-content">
+                <ul class="process-list" id="process-list">
+                    <li>Loading processes...</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Network Interfaces Card (Expandable) -->
+        <div class="card expandable-card">
+            <div class="expandable-header" id="interfaces-header">
+                <span>Network Interfaces</span>
+                <span class="expand-icon">▼</span>
+            </div>
+            <div class="expandable-content" id="interfaces-content">
+                <ul class="interface-list" id="interface-list">
+                    <li>Loading interfaces...</li>
+                </ul>
+            </div>
         </div>
     </main>
 
-    <script>
-        const OPENWEATHER_API_KEY = 'b732daaa1a32815c63cbc4c0f67949fe';
-        const LATITUDE = 4.0833;
-        const LONGITUDE = 100.9833;
-        const PYTHON_SERVER_URL = 'http://status.home'; 
-
-        function formatBytes(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        async function updateSystemInfo() {
-            try {
-                const response = await fetch(`${PYTHON_SERVER_URL}/api/system_info`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
-                }
-                const data = await response.json();
-
-                document.getElementById('cpu-usage').textContent = `${data.cpu_percent.toFixed(1)}%`;
-                document.getElementById('cpu-uptime').textContent = `Uptime: ${data.cpu_uptime}`;
-                document.getElementById('ram-usage').textContent = `${data.ram_percent.toFixed(1)}%`;
-                document.getElementById('ram-total').textContent = `Total: ${data.ram_total_gb.toFixed(1)} GB`;
-
-                const cpuTempElement = document.getElementById('cpu-temp');
-                const cpuTempStatusElement = document.getElementById('cpu-temp-status');
-                if (data.cpu_temp !== "N/A") {
-                    cpuTempElement.textContent = `${data.cpu_temp}°C`;
-                    if (data.cpu_temp > 75) {
-                        cpuTempElement.classList.add('text-red-500');
-                        cpuTempElement.classList.remove('text-indigo-600');
-                        cpuTempStatusElement.textContent = 'High';
-                    } else if (data.cpu_temp > 60) {
-                        cpuTempElement.classList.add('text-orange-500');
-                        cpuTempElement.classList.remove('text-indigo-600', 'text-red-500');
-                        cpuTempStatusElement.textContent = 'Warm';
-                    } else {
-                        cpuTempElement.classList.add('text-indigo-600');
-                        cpuTempElement.classList.remove('text-red-500', 'text-orange-500');
-                        cpuTempStatusElement.textContent = 'Normal';
-                    }
-                } else {
-                    cpuTempElement.textContent = '--°C';
-                    cpuTempStatusElement.textContent = 'N/A';
-                    cpuTempElement.classList.remove('text-red-500', 'text-orange-500');
-                    cpuTempElement.classList.add('text-indigo-600');
-                }
-
-                let uploadSpeedBytesPerSec = data.net_upload_speed_mbps * 1_000_000;
-                let downloadSpeedBytesPerSec = data.net_download_speed_mbps * 1_000_000;
-
-                const KIB_FACTOR = 1024;
-                const MIB_FACTOR = 1024 * 1024;
-
-                let uploadDisplayValue, uploadUnit;
-                if (uploadSpeedBytesPerSec < MIB_FACTOR) {
-                    uploadDisplayValue = (uploadSpeedBytesPerSec / KIB_FACTOR).toFixed(0);
-                    uploadUnit = 'KiB/s';
-                } else {
-                    uploadDisplayValue = (uploadSpeedBytesPerSec / MIB_FACTOR).toFixed(2);
-                    uploadUnit = 'MiB/s';
-                }
-
-                let downloadDisplayValue, downloadUnit;
-                if (downloadSpeedBytesPerSec < MIB_FACTOR) {
-                    downloadDisplayValue = (downloadSpeedBytesPerSec / KIB_FACTOR).toFixed(0);
-                    downloadUnit = 'KiB/s';
-                } else {
-                    downloadDisplayValue = (downloadSpeedBytesPerSec / MIB_FACTOR).toFixed(2);
-                    downloadUnit = 'MiB/s';
-                }
-
-                document.getElementById('net-speed-upload-value').textContent = `${uploadDisplayValue} ${uploadUnit}`;
-                document.getElementById('net-speed-download-value').textContent = `${downloadDisplayValue} ${downloadUnit}`;
-
-                document.getElementById('disk-percent').textContent = `${data.disk_percent.toFixed(1)}%`;
-                document.getElementById('disk-used-total').textContent = `Used: ${data.disk_used_gb.toFixed(1)} GB / Total: ${data.disk_total_gb.toFixed(1)} GB`;
-                
-                document.getElementById('disk-read-speed-value').textContent = `${data.disk_read_speed_mbps.toFixed(2)} MiB/s`;
-                document.getElementById('disk-write-speed-value').textContent = `${data.disk_write_speed_mbps.toFixed(2)} MiB/s`;
-
-                document.getElementById('total-bytes-sent-value').textContent = `Sent: ${formatBytes(data.total_bytes_sent || 0)}`;
-                document.getElementById('total-bytes-received-value').textContent = `Received: ${formatBytes(data.total_bytes_recv || 0)}`;
-
-            } catch (error) {
-                console.error('Failed to fetch system info from Python backend:', error);
-                document.getElementById('cpu-usage').textContent = '--%';
-                document.getElementById('cpu-uptime').textContent = 'Uptime: Error';
-                document.getElementById('ram-usage').textContent = '--%';
-                document.getElementById('ram-total').textContent = 'Total: Error';
-                document.getElementById('cpu-temp').textContent = '--°C';
-                document.getElementById('cpu-temp-status').textContent = 'Error';
-                document.getElementById('net-speed-upload-value').textContent = '-- MiB/s';
-                document.getElementById('net-speed-download-value').textContent = '-- MiB/s';
-                document.getElementById('disk-percent').textContent = '--%';
-                document.getElementById('disk-used-total').textContent = 'Used: -- GB / Total: -- GB';
-                document.getElementById('disk-read-speed-value').textContent = '-- MiB/s';
-                document.getElementById('disk-write-speed-value').textContent = '-- MiB/s';
-                document.getElementById('total-bytes-sent-value').textContent = 'Sent: --';
-                document.getElementById('total-bytes-received-value').textContent = 'Received: --';
-            }
-        }
-
-        async function fetchWeather() {
-            if (!OPENWEATHER_API_KEY) {
-                console.warn('OpenWeatherMap API key is not set.');
-                document.getElementById('weather-temp').textContent = '--°C';
-                document.getElementById('weather-desc').textContent = 'API Key Missing';
-                document.getElementById('weather-icon').textContent = '⚠️';
-                document.getElementById('weather-city').textContent = '';
-                return;
-            }
-
-            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${LATITUDE}&lon=${LONGITUDE}&appid=${OPENWEATHER_API_KEY}&units=metric`;
-
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Weather API error: ${response.status} ${response.statusText}`);
-                }
-                const data = await response.json();
-
-                const temp = data.main.temp.toFixed(0);
-                const description = data.weather[0].description;
-                const iconCode = data.weather[0].icon;
-                const city = data.name;
-
-                document.getElementById('weather-temp').textContent = `${temp}°C`;
-                document.getElementById('weather-desc').textContent = description.charAt(0).toUpperCase() + description.slice(1);
-                document.getElementById('weather-city').textContent = city;
-
-                let weatherEmoji = '';
-                switch (iconCode.substring(0, 2)) {
-                    case '01': weatherEmoji = '☀️'; break;
-                    case '02': weatherEmoji = '🌤️'; break;
-                    case '03': weatherEmoji = '☁️'; break;
-                    case '04': weatherEmoji = '☁️'; break;
-                    case '09': weatherEmoji = '🌧️'; break;
-                    case '10': weatherEmoji = '🌦️'; break;
-                    case '11': weatherEmoji = '⛈️'; break;
-                    case '13': weatherEmoji = '❄️'; break;
-                    case '50': weatherEmoji = '🌫️'; break;
-                    default: weatherEmoji = '❓';
-                }
-                document.getElementById('weather-icon').textContent = weatherEmoji;
-
-            } catch (error) {
-                console.error('Failed to fetch weather data:', error);
-                document.getElementById('weather-temp').textContent = '--°C';
-                document.getElementById('weather-desc').textContent = 'Error';
-                document.getElementById('weather-icon').textContent = '🚫';
-                document.getElementById('weather-city').textContent = '';
-            }
-        }
-
-        function updateDayAndDate() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('current-day-date').textContent = now.toLocaleDateString('en-MY', options);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setInterval(updateSystemInfo, 1000);
-            setInterval(fetchWeather, 600000);
-            setInterval(updateDayAndDate, 60000);
-
-            updateSystemInfo();
-            fetchWeather();
-            updateDayAndDate();
-        });
-    </script>
+    <script src="script.js?v=1.0.2"></script> <!-- Cache-busting parameter -->
 </body>
 </html>
