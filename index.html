@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Info Dashboard</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+    <title>Basic System Info</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,53 +13,48 @@
             background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ed 100%);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
-            padding: 1.25rem; /* Converted from 20px to rem */
+            padding: 1.5rem;
             box-sizing: border-box;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.3); /* Increased transparency for more contrast against background */
+            background-color: rgba(255, 255, 255, 0.3);
             border-radius: 20px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15); /* Stronger, more defined shadow */
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.4); /* More visible border */
-            padding: 2rem; /* Converted from 32px to rem */
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 2rem;
             max-width: 1000px;
             width: 100%;
             display: grid;
-            gap: 1.25rem; /* Converted from 20px to rem */
+            gap: 1.5rem;
             grid-template-columns: repeat(1, minmax(0, 1fr));
             transition: box-shadow 0.3s ease;
         }
         @media (min-width: 640px) {
             .container {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 1.25rem; /* Consistent rem for gap */
             }
         }
         @media (min-width: 1024px) {
             .container {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
+                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
-        @media (min-width: 1280px) {
-            .container {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-            }
-        }
+
         .card {
-            background-color: rgba(255, 255, 255, 0.2); /* Increased transparency for more contrast */
+            background-color: rgba(255, 255, 255, 0.2);
             border-radius: 15px;
-            padding: 1.25rem; /* Converted from 20px to rem */
+            padding: 1.25rem;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 150px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow for cards */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -74,7 +69,6 @@
             font-weight: 500;
             color: #444;
             margin-bottom: 0.6rem;
-            transition: color 0.3s ease;
         }
         .card-value {
             font-size: 1.75rem;
@@ -84,13 +78,11 @@
             align-items: center;
             justify-content: center;
             gap: 0.2rem;
-            transition: color 0.3s ease;
         }
         .card-sub-value {
             font-size: 0.8rem;
             color: #666;
             margin-top: 0.3rem;
-            transition: color 0.3s ease;
         }
         .weather-icon {
             font-size: 1.8rem;
@@ -117,16 +109,8 @@
             color: #888;
             margin-top: 0.2rem;
         }
-        .day-date {
-            grid-column: 1 / -1;
-            text-align: center;
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #222;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid rgba(0,0,0,0.2);
-        }
+        /* Removed .day-date specific styles as element is removed */
+        /* Removed .nav-link specific styles as element is removed */
 
         /* Styles for expandable sections */
         .expandable-card {
@@ -233,49 +217,29 @@
             color: #888;
         }
 
-        /* Chart specific styles */
+        /* Chart specific styles (if any are left for basic dashboard) */
         .chart-card {
-            min-height: 250px; /* Ensure charts have enough height */
+            min-height: 250px;
             padding: 1rem;
-            grid-column: span 1; /* Default to 1 column span */
+            grid-column: span 1;
         }
         @media (min-width: 640px) {
             .chart-card {
-                grid-column: span 1; /* On small screens, charts can take 1 column */
+                grid-column: span 1;
             }
         }
         @media (min-width: 1024px) {
             .chart-card {
-                grid-column: span 1; /* On large screens, charts can take 1 column */
+                grid-column: span 1;
             }
         }
-        /* Make the Disk I/O chart span 2 columns on larger layouts if needed */
         @media (min-width: 1024px) {
             .disk-io-chart-card {
-                grid-column: span 2; /* Span 2 columns on larger screens for better visibility */
+                grid-column: span 2;
             }
         }
 
-        .nav-link {
-            grid-column: 1 / -1;
-            text-align: center;
-            margin-bottom: 1.5rem; /* Margin below for advanced page */
-        }
-        .nav-link a {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.4);
-            color: #2563eb;
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        .nav-link a:hover {
-            background-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-2px);
-        }
+        /* Removed .nav-link styles */
 
 
         /* Dark mode styles */
@@ -308,10 +272,7 @@
             .total-network-text {
                 color: #c0c0c0;
             }
-            .day-date {
-                color: #f5f5f5;
-                border-bottom: 1px solid rgba(255,255,255,0.2);
-            }
+            /* Removed .day-date dark mode styles */
             .expandable-header {
                 color: #f5f5f5;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.15);
@@ -336,22 +297,15 @@
             }
             /* Chart dark mode colors */
             .chart-card canvas {
-                background-color: transparent; /* Charts should have transparent background to show card blur */
+                background-color: transparent;
             }
-            .nav-link a {
-                background-color: rgba(255, 255, 255, 0.1);
-                color: #93c5fd;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            }
-            .nav-link a:hover {
-                background-color: rgba(255, 255, 255, 0.2);
-            }
+            /* Removed .nav-link dark mode styles */
         }
     </style>
 </head>
 <body>
     <main class="container">
-        <!-- Removed Date Display -->
+        <!-- The date display element was removed from here -->
 
         <div class="card">
             <h2 class="card-title">CPU Usage</h2>
@@ -381,15 +335,26 @@
                 <span class="network-speed-icon">⬇️</span>
                 <span id="net-speed-download-value" class="network-speed-value-text">-- MiB/s</span>
             </div>
-            <div class="total-network-text">
-                <span id="total-bytes-sent-value">Sent: --</span> | <span id="total-bytes-received-value">Received: --</span>
-            </div>
+            <div id="total-bytes-sent-value" class="total-network-text">Sent: --</div>
+            <div id="total-bytes-received-value" class="total-network-text">Received: --</div>
         </div>
 
         <div class="card">
             <h2 class="card-title">Total Storage</h2>
             <div id="disk-percent" class="card-value">--%</div>
             <div id="disk-used-total" class="card-sub-value">Used: -- GB / Total: -- GB</div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Disk I/O</h2>
+            <div class="network-speed-item text-purple-600">
+                <span class="network-speed-icon">Read:</span>
+                <span id="disk-read-speed-value" class="network-speed-value-text">-- MiB/s</span>
+            </div>
+            <div class="network-speed-item text-orange-600">
+                <span class="network-speed-icon">Write:</span>
+                <span id="disk-write-speed-value" class="network-speed-value-text">-- MiB/s</span>
+            </div>
         </div>
 
         <div class="card">
@@ -427,6 +392,6 @@
         </div>
     </main>
 
-    <script src="script.js?v=1.0.2"></script> <!-- Cache-busting parameter -->
+    <script src="script.js?v=1.0.3"></script> <!-- Incremented cache-busting parameter -->
 </body>
 </html>
