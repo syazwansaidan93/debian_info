@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic System Info</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ed 100%);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 1.5rem;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 2rem;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+            transition: box-shadow 0.3s ease;
+        }
+        @media (min-width: 640px) {
+            .container {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 1024px) {
+            .container {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.25rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 150px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+        }
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 0.6rem;
+        }
+        .card-value {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.2rem;
+        }
+        .card-sub-value {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+        .weather-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+        }
+        .network-speed-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 0.15rem;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+        .network-speed-value-text {
+            text-align: right;
+            flex-shrink: 0;
+        }
+        .network-speed-icon {
+            flex-shrink: 0;
+        }
+        .total-network-text {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 0.2rem;
+        }
+        .day-date {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #222;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+        }
+        .nav-link {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .nav-link a {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.4);
+            color: #2563eb;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link a:hover {
+            background-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            }
+            .container {
+                background-color: rgba(0, 0, 0, 0.3);
+                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            .card {
+                background-color: rgba(0, 0, 0, 0.2);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+            }
+            .card:hover {
+                box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+            }
+            .card-title {
+                color: #f5f5f5;
+            }
+            .card-value {
+                color: #93c5fd;
+            }
+            .card-sub-value {
+                color: #d4d4d4;
+            }
+            .total-network-text {
+                color: #c0c0c0;
+            }
+            .day-date {
+                color: #f5f5f5;
+                border-bottom: 1px solid rgba(255,255,255,0.2);
+            }
+            .nav-link a {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: #93c5fd;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            }
+            .nav-link a:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div id="current-day-date" class="day-date"></div>
+
+        <div class="card">
+            <h2 class="card-title">CPU Usage</h2>
+            <div id="cpu-usage" class="card-value">--%</div>
+            <div id="cpu-uptime" class="card-sub-value">Uptime: --</div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">RAM Usage</h2>
+            <div id="ram-usage" class="card-value">--%</div>
+            <div id="ram-total" class="card-sub-value">Total: -- GB</div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">CPU Temp</h2>
+            <div id="cpu-temp" class="card-value">--°C</div>
+            <div id="cpu-temp-status" class="card-sub-value"></div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Disk Usage</h2>
+            <div id="disk-percent" class="card-value">--%</div>
+            <div id="disk-used-total" class="card-sub-value">Used: -- GB / Total: -- GB</div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Network Speed</h2>
+            <div class="network-speed-item text-green-600">
+                <span class="network-speed-icon">⬆️</span>
+                <span id="net-speed-upload-value" class="network-speed-value-text">-- MiB/s</span>
+            </div>
+            <div class="network-speed-item text-blue-600">
+                <span class="network-speed-icon">⬇️</span>
+                <span id="net-speed-download-value" class="network-speed-value-text">-- MiB/s</span>
+            </div>
+            <div class="total-network-text">
+                <span id="total-bytes-sent-value">Sent: --</span> | <span id="total-bytes-received-value">Received: --</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Disk I/O</h2>
+            <div class="network-speed-item text-purple-600">
+                <span class="network-speed-icon">Read:</span>
+                <span id="disk-read-speed-value" class="network-speed-value-text">-- MiB/s</span>
+            </div>
+            <div class="network-speed-item text-orange-600">
+                <span class="network-speed-icon">Write:</span>
+                <span id="disk-write-speed-value" class="network-speed-value-text">-- MiB/s</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Weather</h2>
+            <div id="weather-icon" class="weather-icon"></div>
+            <div id="weather-temp" class="card-value">--°C</div>
+            <div id="weather-desc" class="card-sub-value">--</div>
+            <div id="weather-city" class="card-sub-value"></div>
+        </div>
+
+        <div class="nav-link">
+            <a href="advanced_dashboard.html">Go to Advanced Dashboard →</a>
+        </div>
+    </main>
+
+    <script>
+        const OPENWEATHER_API_KEY = 'b732daaa1a32815c63cbc4c0f67949fe';
+        const LATITUDE = 4.0833;
+        const LONGITUDE = 100.9833;
+        const PYTHON_SERVER_URL = 'http://status.home'; 
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        async function updateSystemInfo() {
+            try {
+                const response = await fetch(`${PYTHON_SERVER_URL}/api/system_info`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+
+                document.getElementById('cpu-usage').textContent = `${data.cpu_percent.toFixed(1)}%`;
+                document.getElementById('cpu-uptime').textContent = `Uptime: ${data.cpu_uptime}`;
+                document.getElementById('ram-usage').textContent = `${data.ram_percent.toFixed(1)}%`;
+                document.getElementById('ram-total').textContent = `Total: ${data.ram_total_gb.toFixed(1)} GB`;
+
+                const cpuTempElement = document.getElementById('cpu-temp');
+                const cpuTempStatusElement = document.getElementById('cpu-temp-status');
+                if (data.cpu_temp !== "N/A") {
+                    cpuTempElement.textContent = `${data.cpu_temp}°C`;
+                    if (data.cpu_temp > 75) {
+                        cpuTempElement.classList.add('text-red-500');
+                        cpuTempElement.classList.remove('text-indigo-600');
+                        cpuTempStatusElement.textContent = 'High';
+                    } else if (data.cpu_temp > 60) {
+                        cpuTempElement.classList.add('text-orange-500');
+                        cpuTempElement.classList.remove('text-indigo-600', 'text-red-500');
+                        cpuTempStatusElement.textContent = 'Warm';
+                    } else {
+                        cpuTempElement.classList.add('text-indigo-600');
+                        cpuTempElement.classList.remove('text-red-500', 'text-orange-500');
+                        cpuTempStatusElement.textContent = 'Normal';
+                    }
+                } else {
+                    cpuTempElement.textContent = '--°C';
+                    cpuTempStatusElement.textContent = 'N/A';
+                    cpuTempElement.classList.remove('text-red-500', 'text-orange-500');
+                    cpuTempElement.classList.add('text-indigo-600');
+                }
+
+                let uploadSpeedBytesPerSec = data.net_upload_speed_mbps * 1_000_000;
+                let downloadSpeedBytesPerSec = data.net_download_speed_mbps * 1_000_000;
+
+                const KIB_FACTOR = 1024;
+                const MIB_FACTOR = 1024 * 1024;
+
+                let uploadDisplayValue, uploadUnit;
+                if (uploadSpeedBytesPerSec < MIB_FACTOR) {
+                    uploadDisplayValue = (uploadSpeedBytesPerSec / KIB_FACTOR).toFixed(0);
+                    uploadUnit = 'KiB/s';
+                } else {
+                    uploadDisplayValue = (uploadSpeedBytesPerSec / MIB_FACTOR).toFixed(2);
+                    uploadUnit = 'MiB/s';
+                }
+
+                let downloadDisplayValue, downloadUnit;
+                if (downloadSpeedBytesPerSec < MIB_FACTOR) {
+                    downloadDisplayValue = (downloadSpeedBytesPerSec / KIB_FACTOR).toFixed(0);
+                    downloadUnit = 'KiB/s';
+                } else {
+                    downloadDisplayValue = (downloadSpeedBytesPerSec / MIB_FACTOR).toFixed(2);
+                    downloadUnit = 'MiB/s';
+                }
+
+                document.getElementById('net-speed-upload-value').textContent = `${uploadDisplayValue} ${uploadUnit}`;
+                document.getElementById('net-speed-download-value').textContent = `${downloadDisplayValue} ${downloadUnit}`;
+
+                document.getElementById('disk-percent').textContent = `${data.disk_percent.toFixed(1)}%`;
+                document.getElementById('disk-used-total').textContent = `Used: ${data.disk_used_gb.toFixed(1)} GB / Total: ${data.disk_total_gb.toFixed(1)} GB`;
+                
+                document.getElementById('disk-read-speed-value').textContent = `${data.disk_read_speed_mbps.toFixed(2)} MiB/s`;
+                document.getElementById('disk-write-speed-value').textContent = `${data.disk_write_speed_mbps.toFixed(2)} MiB/s`;
+
+                document.getElementById('total-bytes-sent-value').textContent = `Sent: ${formatBytes(data.total_bytes_sent || 0)}`;
+                document.getElementById('total-bytes-received-value').textContent = `Received: ${formatBytes(data.total_bytes_recv || 0)}`;
+
+            } catch (error) {
+                console.error('Failed to fetch system info from Python backend:', error);
+                document.getElementById('cpu-usage').textContent = '--%';
+                document.getElementById('cpu-uptime').textContent = 'Uptime: Error';
+                document.getElementById('ram-usage').textContent = '--%';
+                document.getElementById('ram-total').textContent = 'Total: Error';
+                document.getElementById('cpu-temp').textContent = '--°C';
+                document.getElementById('cpu-temp-status').textContent = 'Error';
+                document.getElementById('net-speed-upload-value').textContent = '-- MiB/s';
+                document.getElementById('net-speed-download-value').textContent = '-- MiB/s';
+                document.getElementById('disk-percent').textContent = '--%';
+                document.getElementById('disk-used-total').textContent = 'Used: -- GB / Total: -- GB';
+                document.getElementById('disk-read-speed-value').textContent = '-- MiB/s';
+                document.getElementById('disk-write-speed-value').textContent = '-- MiB/s';
+                document.getElementById('total-bytes-sent-value').textContent = 'Sent: --';
+                document.getElementById('total-bytes-received-value').textContent = 'Received: --';
+            }
+        }
+
+        async function fetchWeather() {
+            if (!OPENWEATHER_API_KEY) {
+                console.warn('OpenWeatherMap API key is not set.');
+                document.getElementById('weather-temp').textContent = '--°C';
+                document.getElementById('weather-desc').textContent = 'API Key Missing';
+                document.getElementById('weather-icon').textContent = '⚠️';
+                document.getElementById('weather-city').textContent = '';
+                return;
+            }
+
+            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${LATITUDE}&lon=${LONGITUDE}&appid=${OPENWEATHER_API_KEY}&units=metric`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Weather API error: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+
+                const temp = data.main.temp.toFixed(0);
+                const description = data.weather[0].description;
+                const iconCode = data.weather[0].icon;
+                const city = data.name;
+
+                document.getElementById('weather-temp').textContent = `${temp}°C`;
+                document.getElementById('weather-desc').textContent = description.charAt(0).toUpperCase() + description.slice(1);
+                document.getElementById('weather-city').textContent = city;
+
+                let weatherEmoji = '';
+                switch (iconCode.substring(0, 2)) {
+                    case '01': weatherEmoji = '☀️'; break;
+                    case '02': weatherEmoji = '🌤️'; break;
+                    case '03': weatherEmoji = '☁️'; break;
+                    case '04': weatherEmoji = '☁️'; break;
+                    case '09': weatherEmoji = '🌧️'; break;
+                    case '10': weatherEmoji = '🌦️'; break;
+                    case '11': weatherEmoji = '⛈️'; break;
+                    case '13': weatherEmoji = '❄️'; break;
+                    case '50': weatherEmoji = '🌫️'; break;
+                    default: weatherEmoji = '❓';
+                }
+                document.getElementById('weather-icon').textContent = weatherEmoji;
+
+            } catch (error) {
+                console.error('Failed to fetch weather data:', error);
+                document.getElementById('weather-temp').textContent = '--°C';
+                document.getElementById('weather-desc').textContent = 'Error';
+                document.getElementById('weather-icon').textContent = '🚫';
+                document.getElementById('weather-city').textContent = '';
+            }
+        }
+
+        function updateDayAndDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-day-date').textContent = now.toLocaleDateString('en-MY', options);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setInterval(updateSystemInfo, 1000);
+            setInterval(fetchWeather, 600000);
+            setInterval(updateDayAndDate, 60000);
+
+            updateSystemInfo();
+            fetchWeather();
+            updateDayAndDate();
+        });
+    </script>
+</body>
+</html>
