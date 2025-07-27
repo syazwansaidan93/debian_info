@@ -84,10 +84,6 @@
             color: #666;
             margin-top: 0.3rem;
         }
-        .weather-icon {
-            font-size: 1.8rem;
-            margin-bottom: 0.3rem;
-        }
         .network-speed-item {
             display: flex;
             flex-direction: row;
@@ -109,8 +105,6 @@
             color: #888;
             margin-top: 0.2rem;
         }
-        /* Removed .day-date specific styles as element is removed */
-        /* Removed .nav-link specific styles as element is removed */
 
         /* Styles for expandable sections */
         .expandable-card {
@@ -239,9 +233,6 @@
             }
         }
 
-        /* Removed .nav-link styles */
-
-
         /* Dark mode styles */
         @media (prefers-color-scheme: dark) {
             body {
@@ -272,7 +263,6 @@
             .total-network-text {
                 color: #c0c0c0;
             }
-            /* Removed .day-date dark mode styles */
             .expandable-header {
                 color: #f5f5f5;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.15);
@@ -299,14 +289,11 @@
             .chart-card canvas {
                 background-color: transparent;
             }
-            /* Removed .nav-link dark mode styles */
         }
     </style>
 </head>
 <body>
     <main class="container">
-        <!-- The date display element was removed from here -->
-
         <div class="card">
             <h2 class="card-title">CPU Usage</h2>
             <div id="cpu-usage" class="card-value">--%</div>
@@ -357,14 +344,6 @@
             </div>
         </div>
 
-        <div class="card">
-            <h2 class="card-title">Weather</h2>
-            <div id="weather-icon" class="weather-icon"></div>
-            <div id="weather-temp" class="card-value">--°C</div>
-            <div id="weather-desc" class="card-sub-value">--</div>
-            <div id="weather-city" class="card-sub-value"></div>
-        </div>
-
         <!-- Top Processes Card (Expandable) -->
         <div class="card expandable-card">
             <div class="expandable-header" id="processes-header">
@@ -392,6 +371,6 @@
         </div>
     </main>
 
-    <script src="script.js?v=1.0.3"></script> <!-- Incremented cache-busting parameter -->
+    <script src="script.js"></script>
 </body>
 </html>
