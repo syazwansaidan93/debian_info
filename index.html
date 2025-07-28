@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Info Dashboard</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css"> <!-- Link to external stylesheet -->
+    <!-- No Tailwind CSS CDN -->
+    <!-- No Google Fonts CDN - will be handled via @font-face in style.css -->
+    <link rel="stylesheet" href="style.css"> <!-- Link to custom stylesheet -->
 </head>
 <body>
     <div id="loading-overlay">
@@ -15,7 +15,7 @@
     </div>
 
     <main class="container">
-        <div id="current-day-date" class="day-date"></div>
+        <!-- Removed day-date div as per previous instruction to remove its styling -->
 
         <div class="card">
             <h2 class="card-title">CPU Usage</h2>
@@ -37,11 +37,11 @@
 
         <div class="card">
             <h2 class="card-title">Network Speed</h2>
-            <div class="network-speed-item text-green-600">
+            <div class="network-speed-item upload">
                 <span class="network-speed-icon">⬆️</span>
                 <span id="net-speed-upload-value" class="network-speed-value-text">-- B/s</span>
             </div>
-            <div class="network-speed-item text-blue-600">
+            <div class="network-speed-item download">
                 <span class="network-speed-icon">⬇️</span>
                 <span id="net-speed-download-value" class="network-speed-value-text">-- B/s</span>
             </div>
@@ -51,11 +51,13 @@
         </div>
 
         <div class="card">
-            <h2 class="card-title">Disk Usage (Main)</h2>
+            <h2 class="card-title">Main Disk Usage</h2>
             <div id="disk-percent" class="card-value">--%</div>
             <div id="disk-used-total" class="card-sub-value">Used: -- GB / Total: -- GB</div>
-            
-            <h3 class="card-title mt-4">Disk Usage (USB)</h3>
+        </div>
+        
+        <div class="card">
+            <h2 class="card-title">USB Disk Usage</h2>
             <div id="usb-disk-percent" class="card-value">--%</div>
             <div id="usb-disk-used-total" class="card-sub-value">Used: -- GB / Total: -- GB</div>
         </div>
