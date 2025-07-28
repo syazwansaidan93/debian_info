@@ -1,14 +1,60 @@
+/* Inter Font Face Definitions (assuming fonts are in a 'fonts' subfolder relative to style.css) */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url('./fonts/Inter-Light.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('./fonts/Inter-Regular.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('./fonts/Inter-Medium.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('./fonts/Inter-SemiBold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('./fonts/Inter-Bold.woff2') format('woff2');
+}
+
+/* Basic Reset & Body Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, #f0f2f5 0%, #e6e9ed 100%);
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: flex-start; /* Align to top for longer content */
     min-height: 100vh;
     padding: 1.5rem;
-    box-sizing: border-box;
     position: relative;
+    color: #333; /* Default text color */
 }
+
+/* Container for the entire dashboard */
 .container {
     background-color: rgba(255, 255, 255, 0.3);
     border-radius: 20px;
@@ -21,20 +67,23 @@ body {
     width: 100%;
     display: grid;
     gap: 1.5rem;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-columns: repeat(1, minmax(0, 1fr)); /* Single column by default */
     transition: box-shadow 0.3s ease;
 }
-@media (min-width: 640px) {
+
+/* Responsive Grid for Container */
+@media (min-width: 640px) { /* Small screens (sm) */
     .container {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr)); /* 2 columns */
     }
 }
-@media (min-width: 1024px) {
+@media (min-width: 1024px) { /* Large screens (lg) */
     .container {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr)); /* 3 columns */
     }
 }
 
+/* Card Styles */
 .card {
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 15px;
@@ -55,26 +104,31 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
 }
+
 .card-title {
     font-size: 0.95rem;
     font-weight: 500;
     color: #444;
     margin-bottom: 0.6rem;
 }
+
 .card-value {
     font-size: 1.75rem;
     font-weight: 600;
-    color: #2563eb;
+    color: #2563eb; /* Blue */
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.2rem;
 }
+
 .card-sub-value {
     font-size: 0.8rem;
     color: #666;
     margin-top: 0.3rem;
 }
+
+/* Specific styling for network speed items */
 .network-speed-item {
     display: flex;
     flex-direction: row;
@@ -83,6 +137,12 @@ body {
     gap: 0.15rem;
     font-size: 1.25rem;
     font-weight: 500;
+}
+.network-speed-item.upload {
+    color: #22c55e; /* Green */
+}
+.network-speed-item.download {
+    color: #3b82f6; /* Blue */
 }
 .network-speed-value-text {
     text-align: right;
@@ -97,6 +157,18 @@ body {
     margin-top: 0.2rem;
 }
 
+/* Removed USB Disk Title within Disk Usage Card styling */
+/* .card .usb-disk-title {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #444;
+} */
+
+/* Expandable Card Styles */
 .expandable-card {
     display: flex;
     flex-direction: column;
@@ -104,17 +176,18 @@ body {
     align-items: stretch;
     text-align: left;
     min-height: auto;
-    padding: 0;
-    grid-column: span 1;
+    padding: 0; /* Remove padding from the card itself, it's handled by header/content */
+    grid-column: span 1; /* Default to 1 column span */
 }
+/* Responsive span for expandable cards */
 @media (min-width: 640px) {
     .expandable-card {
-        grid-column: span 2;
+        grid-column: span 2; /* Span 2 columns on medium screens and up */
     }
 }
 @media (min-width: 1024px) {
     .expandable-card {
-        grid-column: span 3;
+        grid-column: span 3; /* Span 3 columns on large screens and up */
     }
 }
 
@@ -129,46 +202,64 @@ body {
     color: #444;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     transition: background-color 0.2s ease, color 0.3s ease;
+    border-radius: 15px 15px 0 0; /* Rounded top corners */
+    background-color: rgba(255, 255, 255, 0.2); /* Match card background */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Match card shadow */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: none; /* No bottom border for header, content provides it */
 }
 .expandable-header:hover {
     background-color: rgba(255, 255, 255, 0.3);
 }
+
 .expandable-content {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-    padding: 0 1.25rem;
+    padding: 0 1.25rem; /* Initial padding */
     color: #666;
     font-size: 0.8rem;
     line-height: 1.4;
+    background-color: rgba(255, 255, 255, 0.2); /* Match card background */
+    border-radius: 0 0 15px 15px; /* Rounded bottom corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Match card shadow */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-top: none; /* No top border for content, header provides it */
 }
 .expandable-content.expanded {
-    max-height: 500px;
-    padding: 1.25rem;
+    max-height: 500px; /* Max height to allow transition */
+    padding: 1.25rem; /* Expanded padding */
 }
+
 .expand-icon {
     transition: transform 0.3s ease;
 }
 .expand-icon.rotated {
     transform: rotate(180deg);
 }
-.process-list {
+
+/* List styles within expandable content */
+.process-list, .interface-list {
     list-style: none;
     padding: 0;
     margin: 0;
     width: 100%;
 }
-.process-item {
+.process-item, .interface-item {
     display: flex;
     justify-content: space-between;
     padding: 0.3rem 0;
     border-bottom: 1px dashed rgba(0,0,0,0.05);
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
 }
-.process-item:last-child {
+.process-item:last-child, .interface-item:last-child {
     border-bottom: none;
 }
-.process-name {
+.process-name, .interface-name {
     font-weight: 500;
     color: #333;
     flex-grow: 1;
@@ -177,15 +268,21 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    min-width: 50%;
+    min-width: 50%; /* Ensure name takes at least half width before wrapping */
 }
-.process-stats {
+.process-stats, .interface-stats {
     text-align: right;
     flex-shrink: 0;
-    color: #2563eb;
-    min-width: 45%;
+    color: #2563eb; /* Blue */
+    min-width: 45%; /* Ensure stats take at least 45% before wrapping */
+}
+.interface-ip {
+    display: block;
+    font-size: 0.7rem;
+    color: #888;
 }
 
+/* Loading Overlay Styles */
 #loading-overlay {
     position: fixed;
     top: 0;
@@ -202,7 +299,7 @@ body {
 }
 #loading-overlay.hidden {
     opacity: 0;
-    pointer-events: none;
+    pointer-events: none; /* Allow clicks through once hidden */
 }
 
 .spinner {
@@ -219,9 +316,11 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+/* Dark Mode Styles */
 @media (prefers-color-scheme: dark) {
     body {
         background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        color: #f5f5f5;
     }
     .container {
         background-color: rgba(0, 0, 0, 0.3);
@@ -240,32 +339,50 @@ body {
         color: #f5f5f5;
     }
     .card-value {
-        color: #93c5fd;
+        color: #93c5fd; /* Light Blue */
     }
     .card-sub-value {
         color: #d4d4d4;
     }
+    .network-speed-item.upload {
+        color: #86efac; /* Lighter Green */
+    }
+    .network-speed-item.download {
+        color: #60a5fa; /* Lighter Blue */
+    }
     .total-network-text {
         color: #c0c0c0;
     }
+    /* Removed .day-date dark mode styling */
     .expandable-header {
         color: #f5f5f5;
         border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        background-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-bottom: none;
     }
     .expandable-header:hover {
         background-color: rgba(255, 255, 255, 0.1);
     }
     .expandable-content {
         color: #d4d4d4;
+        background-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-top: none;
     }
-    .process-name {
+    .process-name, .interface-name {
         color: #f5f5f5;
     }
-    .process-item {
+    .process-item, .interface-item {
         border-bottom: 1px dashed rgba(255,255,255,0.05);
     }
-    .process-stats {
+    .process-stats, .interface-stats {
         color: #93c5fd;
+    }
+    .interface-ip {
+        color: #b0b0b0;
     }
     #loading-overlay {
         background-color: rgba(0, 0, 0, 0.8);
