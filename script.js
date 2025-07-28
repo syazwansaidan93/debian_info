@@ -15,11 +15,11 @@ async function updateSystemInfo() {
         }
         const data = await response.json();
 
-        // Update CPU metrics
+        // Update CPU metrics - data is now pre-formatted from PHP
         document.getElementById('cpu-usage').textContent = data.cpu_percent;
         document.getElementById('cpu-uptime').textContent = `Uptime: ${data.cpu_uptime}`;
 
-        // Update RAM metrics
+        // Update RAM metrics - data is now pre-formatted from PHP
         document.getElementById('ram-usage').textContent = data.ram_percent;
         document.getElementById('ram-total').textContent = `Total: ${data.ram_total_gb}`;
 
@@ -29,7 +29,7 @@ async function updateSystemInfo() {
         cpuTempElement.textContent = data.cpu_temp; // Data already includes °C from backend
 
         // Determine CPU temperature status and apply appropriate styling
-        const tempValue = parseFloat(data.cpu_temp); 
+        const tempValue = parseFloat(data.cpu_temp); // Parse float from string like "55.0°C"
         // Remove all existing color classes first to ensure only one is applied
         cpuTempElement.classList.remove('text-red-500', 'text-orange-500', 'text-indigo-600'); 
         if (!isNaN(tempValue)) {
@@ -48,17 +48,17 @@ async function updateSystemInfo() {
             cpuTempElement.classList.add('text-indigo-600'); // Default color for N/A
         }
 
-        // Update Network Speed metrics
+        // Update Network Speed metrics - data is now pre-formatted from PHP
         document.getElementById('net-speed-upload-value').textContent = data.net_upload_speed;
         document.getElementById('net-speed-download-value').textContent = data.net_download_speed;
         document.getElementById('total-bytes-sent-value').textContent = `Sent: ${data.total_bytes_sent}`;
         document.getElementById('total-bytes-received-value').textContent = `Received: ${data.total_bytes_recv}`;
 
-        // Update Main Disk Usage
+        // Update Main Disk Usage - data is now pre-formatted from PHP
         document.getElementById('disk-percent').textContent = data.main_disk_percent;
         document.getElementById('disk-used-total').textContent = `Used: ${data.main_disk_used_gb} / Total: ${data.main_disk_total_gb}`;
         
-        // Update USB Disk Usage
+        // Update USB Disk Usage - data is now pre-formatted from PHP
         document.getElementById('usb-disk-percent').textContent = data.usb_disk_percent;
         document.getElementById('usb-disk-used-total').textContent = `Used: ${data.usb_disk_used_gb} / Total: ${data.usb_disk_total_gb}`;
 
@@ -77,8 +77,8 @@ async function updateSystemInfo() {
         document.getElementById('ram-total').textContent = 'Total: Error';
         document.getElementById('cpu-temp').textContent = '--°C';
         document.getElementById('cpu-temp-status').textContent = 'Error';
-        document.getElementById('net-speed-upload-value').textContent = '-- B/s';
-        document.getElementById('net-speed-download-value').textContent = '-- B/s';
+        document.getElementById('net-speed-upload-value').textContent = '-- B/s'; // Consistent error format
+        document.getElementById('net-speed-download-value').textContent = '-- B/s'; // Consistent error format
         document.getElementById('disk-percent').textContent = '--%';
         document.getElementById('disk-used-total').textContent = 'Used: -- GB / Total: -- GB';
         document.getElementById('usb-disk-percent').textContent = '--%';
@@ -109,6 +109,7 @@ async function fetchAndDisplayTopProcesses() {
         processes.forEach(proc => {
             const li = document.createElement('li');
             li.className = 'process-item';
+            // Data like cpu_percent and memory_percent are already formatted strings from PHP
             li.innerHTML = `
                 <span class="process-name">${proc.name} (PID: ${proc.pid})</span>
                 <span class="process-stats">CPU: ${proc.cpu_percent} | Mem: ${proc.memory_percent}</span>
