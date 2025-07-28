@@ -1,165 +1,68 @@
-const API_BASE_URL = 'http://status.home/api'; // Correctly points to your PHP API base URL
+const PHP_API_BASE_URL = 'http://status.home/api'; // Correctly points to your PHP API base URL
+const PROCESS_UPDATE_INTERVAL_MS = 10000; // Interval for updating top processes (10 seconds)
 
 let processUpdateIntervalId = null; 
 
-// Global variables to store previous raw data for calculations
-let lastCpuStats = null;
-let lastNetStats = null;
-// Removed lastDiskIoStats as disk I/O speed is no longer calculated in JS
-
-let initialLoadComplete = false; // New flag to track initial load
-
-// Function to format speed for human readability (e.g., 10.5 KB/s, 2.3 MB/s)
-function formatSpeedHumanReadable(bytesPerSecond) {
-    if (bytesPerSecond === 0) return "0 B/s";
-    const k = 1024;
-    const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s', 'ZB/s', 'YB/s'];
-    const i = Math.floor(Math.log(bytesPerSecond) / Math.log(k));
-    return (bytesPerSecond / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
-}
-
-// Function to format total bytes for human readability
-function formatBytesHumanReadable(bytes) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
-}
-
-// Function to format memory for human readability
-function formatMemoryHumanReadable(bytes) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
-}
-
-// Function to format uptime for human readability
-function formatUptime(totalSeconds) {
-    if (totalSeconds === 0) return "N/A";
-    const days = Math.floor(totalSeconds / (3600 * 24));
-    totalSeconds %= (3600 * 24);
-    const hours = Math.floor(totalSeconds / 3600);
-    totalSeconds %= 3600;
-    const minutes = Math.floor(totalSeconds / 60);
-
-    let uptimeString = '';
-    if (days > 0) uptimeString += `${days} days, `;
-    uptimeString += `${hours} hours, ${minutes} minutes`;
-    return uptimeString;
-}
-
+// Flag to track if initial load is complete, to hide loading overlay
+let initialLoadComplete = false; 
 
 async function updateSystemInfo() {
     try {
-        const response = await fetch(`${API_BASE_URL}/system_info.php`);
+        // Fetch real-time system information from the PHP API endpoint
+        const response = await fetch(`${PHP_API_BASE_URL}/system_info.php`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
         }
         const data = await response.json();
 
-        // --- CPU Usage Calculation ---
-        const currentCpuStats = data.cpu_stats;
-        if (lastCpuStats && currentCpuStats) {
-            const deltaTime = currentCpuStats.timestamp - lastCpuStats.timestamp;
-            const deltaTotalCpuTime = currentCpuStats.total_cpu_time - lastCpuStats.total_cpu_time;
-            const deltaIdleTime = currentCpuStats.idle_time - lastCpuStats.idle_time;
+        // Update CPU metrics
+        document.getElementById('cpu-usage').textContent = data.cpu_percent;
+        document.getElementById('cpu-uptime').textContent = `Uptime: ${data.cpu_uptime}`;
 
-            if (deltaTime > 0 && deltaTotalCpuTime > 0) {
-                const cpuUsagePercent = ((deltaTotalCpuTime - deltaIdleTime) / deltaTotalCpuTime) * 100;
-                document.getElementById('cpu-usage').textContent = `${cpuUsagePercent.toFixed(1)}%`;
-            } else {
-                document.getElementById('cpu-usage').textContent = 'N/A%';
-            }
-        } else {
-            document.getElementById('cpu-usage').textContent = '--%';
-        }
-        lastCpuStats = currentCpuStats; // Store current for next calculation
+        // Update RAM metrics
+        document.getElementById('ram-usage').textContent = data.ram_percent;
+        document.getElementById('ram-total').textContent = `Total: ${data.ram_total_gb}`;
 
-        // --- Uptime ---
-        document.getElementById('cpu-uptime').textContent = `Uptime: ${formatUptime(data.uptime_seconds)}`;
-
-        // --- RAM Usage Calculation ---
-        const ramTotalBytes = data.ram_total_bytes;
-        const ramUsedBytes = data.ram_used_bytes;
-        const ramTotalGB = (ramTotalBytes / (1024 * 1024 * 1024)).toFixed(1);
-        const ramUsedGB = (ramUsedBytes / (1024 * 1024 * 1024)).toFixed(1);
-        const ramPercent = ramTotalBytes > 0 ? ((ramUsedBytes / ramTotalBytes) * 100).toFixed(1) : '--';
-        
-        document.getElementById('ram-usage').textContent = `${ramPercent}%`;
-        document.getElementById('ram-total').textContent = `Total: ${ramTotalGB} GB`;
-
-        // --- CPU Temperature ---
+        // Update CPU Temperature and status
         const cpuTempElement = document.getElementById('cpu-temp');
         const cpuTempStatusElement = document.getElementById('cpu-temp-status');
-        const tempValue = data.cpu_temp_celsius;
+        cpuTempElement.textContent = data.cpu_temp; // Data already includes °C from backend
 
-        if (tempValue !== null && !isNaN(tempValue)) {
-            cpuTempElement.textContent = `${tempValue.toFixed(1)}°C`;
+        // Determine CPU temperature status and apply appropriate styling
+        const tempValue = parseFloat(data.cpu_temp); 
+        // Remove all existing color classes first to ensure only one is applied
+        cpuTempElement.classList.remove('text-red-500', 'text-orange-500', 'text-indigo-600'); 
+        if (!isNaN(tempValue)) {
             if (tempValue > 75) {
                 cpuTempElement.classList.add('text-red-500');
-                cpuTempElement.classList.remove('text-indigo-600', 'text-orange-500');
                 cpuTempStatusElement.textContent = 'High';
             } else if (tempValue > 60) {
                 cpuTempElement.classList.add('text-orange-500');
-                cpuTempElement.classList.remove('text-indigo-600', 'text-red-500');
                 cpuTempStatusElement.textContent = 'Warm';
             } else {
                 cpuTempElement.classList.add('text-indigo-600');
-                cpuTempElement.classList.remove('text-red-500', 'text-orange-500');
                 cpuTempStatusElement.textContent = 'Normal';
             }
         } else {
-            cpuTempElement.textContent = '--°C';
             cpuTempStatusElement.textContent = 'N/A';
-            cpuTempElement.classList.remove('text-red-500', 'text-orange-500');
-            cpuTempElement.classList.add('text-indigo-600');
+            cpuTempElement.classList.add('text-indigo-600'); // Default color for N/A
         }
 
-        // --- Network Speed Calculation ---
-        const currentNetStats = data.net_stats;
-        let uploadSpeed = 0;
-        let downloadSpeed = 0;
+        // Update Network Speed metrics
+        document.getElementById('net-speed-upload-value').textContent = data.net_upload_speed;
+        document.getElementById('net-speed-download-value').textContent = data.net_download_speed;
+        document.getElementById('total-bytes-sent-value').textContent = `Sent: ${data.total_bytes_sent}`;
+        document.getElementById('total-bytes-received-value').textContent = `Received: ${data.total_bytes_recv}`;
 
-        if (lastNetStats && currentNetStats) {
-            const deltaTime = currentNetStats.timestamp - lastNetStats.timestamp;
-            if (deltaTime > 0) {
-                const bytesSentDiff = currentNetStats.bytes_sent - lastNetStats.bytes_sent;
-                const bytesRecvDiff = currentNetStats.bytes_recv - lastNetStats.bytes_recv;
-                uploadSpeed = bytesSentDiff / deltaTime;
-                downloadSpeed = bytesRecvDiff / deltaTime;
-            }
-        }
-        lastNetStats = currentNetStats; // Store current for next calculation
-
-        document.getElementById('net-speed-upload-value').textContent = formatSpeedHumanReadable(uploadSpeed);
-        document.getElementById('net-speed-download-value').textContent = formatSpeedHumanReadable(downloadSpeed);
-        document.getElementById('total-bytes-sent-value').textContent = `Sent: ${formatBytesHumanReadable(data.net_stats.bytes_sent)}`;
-        document.getElementById('total-bytes-received-value').textContent = `Received: ${formatBytesHumanReadable(data.net_stats.bytes_recv)}`;
-
-        // --- Disk Usage Calculation (Main Disk) ---
-        const mainDiskTotalBytes = data.main_disk_total_bytes;
-        const mainDiskUsedBytes = data.main_disk_used_bytes;
-        const mainDiskTotalGB = (mainDiskTotalBytes / (1024 * 1024 * 1024)).toFixed(1);
-        const mainDiskUsedGB = (mainDiskUsedBytes / (1024 * 1024 * 1024)).toFixed(1);
-        const mainDiskPercent = mainDiskTotalBytes > 0 ? ((mainDiskUsedBytes / mainDiskTotalBytes) * 100).toFixed(0) : '--';
-
-        document.getElementById('disk-percent').textContent = `${mainDiskPercent}%`;
-        document.getElementById('disk-used-total').textContent = `Used: ${mainDiskUsedGB} GB / Total: ${mainDiskTotalGB} GB`;
+        // Update Main Disk Usage
+        document.getElementById('disk-percent').textContent = data.main_disk_percent;
+        document.getElementById('disk-used-total').textContent = `Used: ${data.main_disk_used_gb} / Total: ${data.main_disk_total_gb}`;
         
-        // --- USB Disk Usage Calculation ---
-        const usbDiskTotalBytes = data.usb_disk_total_bytes;
-        const usbDiskUsedBytes = data.usb_disk_used_bytes;
-        const usbDiskTotalGB = (usbDiskTotalBytes / (1024 * 1024 * 1024)).toFixed(1);
-        const usbDiskUsedGB = (usbDiskUsedBytes / (1024 * 1024 * 1024)).toFixed(1);
-        const usbDiskPercent = usbDiskTotalBytes > 0 ? ((usbDiskUsedBytes / usbDiskTotalBytes) * 100).toFixed(0) : '--';
+        // Update USB Disk Usage
+        document.getElementById('usb-disk-percent').textContent = data.usb_disk_percent;
+        document.getElementById('usb-disk-used-total').textContent = `Used: ${data.usb_disk_used_gb} / Total: ${data.usb_disk_total_gb}`;
 
-        document.getElementById('usb-disk-percent').textContent = `${usbDiskPercent}%`;
-        document.getElementById('usb-disk-used-total').textContent = `Used: ${usbDiskUsedGB} GB / Total: ${usbDiskTotalGB} GB`;
-
-        // Hide loading overlay after first successful data load
+        // Hide loading overlay after the first successful data load
         if (!initialLoadComplete) {
             document.getElementById('loading-overlay').classList.add('hidden');
             initialLoadComplete = true;
@@ -167,15 +70,15 @@ async function updateSystemInfo() {
 
     } catch (error) {
         console.error('Failed to fetch system info from PHP backend:', error);
+        // Set all displayed values to error state for clarity
         document.getElementById('cpu-usage').textContent = '--%';
         document.getElementById('cpu-uptime').textContent = 'Uptime: Error';
         document.getElementById('ram-usage').textContent = '--%';
         document.getElementById('ram-total').textContent = 'Total: Error';
         document.getElementById('cpu-temp').textContent = '--°C';
         document.getElementById('cpu-temp-status').textContent = 'Error';
-        document.getElementById('net-speed-upload-value').textContent = '0 B/s';
-        document.getElementById('net-speed-download-value').textContent = '0 B/s';
-        // Removed disk I/O specific error messages
+        document.getElementById('net-speed-upload-value').textContent = '-- B/s';
+        document.getElementById('net-speed-download-value').textContent = '-- B/s';
         document.getElementById('disk-percent').textContent = '--%';
         document.getElementById('disk-used-total').textContent = 'Used: -- GB / Total: -- GB';
         document.getElementById('usb-disk-percent').textContent = '--%';
@@ -187,9 +90,10 @@ async function updateSystemInfo() {
 
 async function fetchAndDisplayTopProcesses() {
     const processList = document.getElementById('process-list');
-    processList.innerHTML = '<li>Fetching processes...</li>';
+    processList.innerHTML = '<li>Fetching processes...</li>'; // Show loading state
     try {
-        const response = await fetch(`${API_BASE_URL}/top_processes.php`);
+        // Fetch top processes from PHP API endpoint
+        const response = await fetch(`${PHP_API_BASE_URL}/top_processes.php`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
         }
@@ -200,6 +104,7 @@ async function fetchAndDisplayTopProcesses() {
             return;
         }
 
+        // Clear previous list and populate with new data
         processList.innerHTML = '';
         processes.forEach(proc => {
             const li = document.createElement('li');
@@ -211,16 +116,17 @@ async function fetchAndDisplayTopProcesses() {
             processList.appendChild(li);
         });
     } catch (error) {
-        console.error('Failed to fetch top processes:', error);
+        console.error('Failed to fetch top processes from PHP backend:', error);
         processList.innerHTML = `<li>Error loading processes: ${error.message}</li>`;
     }
 }
 
 async function fetchAndDisplayNetworkInterfaces() {
     const interfaceList = document.getElementById('interface-list');
-    interfaceList.innerHTML = '<li>Fetching interfaces...</li>'; 
+    interfaceList.innerHTML = '<li>Fetching interfaces...</li>'; // Show loading state
     try {
-        const response = await fetch(`${API_BASE_URL}/network_interfaces.php`);
+        // Fetch network interfaces from PHP API endpoint
+        const response = await fetch(`${PHP_API_BASE_URL}/network_interfaces.php`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
         }
@@ -231,15 +137,17 @@ async function fetchAndDisplayNetworkInterfaces() {
             return;
         }
 
+        // Clear previous list and populate with new data
         interfaceList.innerHTML = ''; 
         interfaces.forEach(iface => {
-            // Filter out 'lo' (loopback) and 'wlan0' interfaces
+            // Filter out 'lo' (loopback) and 'wlan0' interfaces for cleaner display
             if (iface.name === 'lo' || iface.name === 'wlan0') {
                 return; // Skip this interface
             }
 
             const li = document.createElement('li');
             li.className = 'interface-item';
+            // Format IP addresses for display
             let ipAddressesHtml = iface.ip_addresses.map(ip => `<span class="interface-ip">${ip.family}: ${ip.address}</span>`).join('');
             if (!ipAddressesHtml) ipAddressesHtml = '<span class="interface-ip">No IP Addresses</span>';
 
@@ -255,12 +163,17 @@ async function fetchAndDisplayNetworkInterfaces() {
             interfaceList.appendChild(li);
         });
     } catch (error) {
-        console.error('Failed to fetch network interfaces:', error);
+        console.error('Failed to fetch network interfaces from PHP backend:', error);
         interfaceList.innerHTML = `<li>Error loading interfaces: ${error.message}</li>`;
     }
 }
 
-
+/**
+ * Toggles the expansion of a card section and loads content if not already loaded.
+ * @param {string} headerId - The ID of the header element.
+ * @param {string} contentId - The ID of the content element.
+ * @param {Function} loadFunction - The asynchronous function to call to load the content.
+ */
 function toggleExpandableSection(headerId, contentId, loadFunction) {
     const header = document.getElementById(headerId);
     const content = document.getElementById(contentId);
@@ -271,11 +184,14 @@ function toggleExpandableSection(headerId, contentId, loadFunction) {
         icon.classList.toggle('rotated', isExpanded);
 
         if (isExpanded) {
+            // Call the load function immediately when expanded
             loadFunction(); 
+            // If it's the processes section, start an interval for continuous updates
             if (headerId === 'processes-header' && processUpdateIntervalId === null) {
-                processUpdateIntervalId = setInterval(loadFunction, 10000); 
+                processUpdateIntervalId = setInterval(loadFunction, PROCESS_UPDATE_INTERVAL_MS); 
             }
         } else {
+            // If collapsing the processes section, clear the update interval
             if (headerId === 'processes-header' && processUpdateIntervalId !== null) {
                 clearInterval(processUpdateIntervalId);
                 processUpdateIntervalId = null;
@@ -285,10 +201,12 @@ function toggleExpandableSection(headerId, contentId, loadFunction) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initial fetch to prime the lastStats variables
+    // Initial fetch of system information to populate cards and hide loading overlay
     updateSystemInfo(); 
-    setInterval(updateSystemInfo, 1000);
+    // Set interval for continuous updates of main system info (every second)
+    setInterval(updateSystemInfo, 1000); 
 
+    // Setup expandable sections
     toggleExpandableSection('processes-header', 'processes-content', fetchAndDisplayTopProcesses);
     toggleExpandableSection('interfaces-header', 'interfaces-content', fetchAndDisplayNetworkInterfaces);
 });
