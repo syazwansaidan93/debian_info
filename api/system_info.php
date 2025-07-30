@@ -35,7 +35,7 @@ function format_bytes_human_readable($bytes) {
 function format_speed_human_readable($bytes_per_second) {
     if ($bytes_per_second === 0) return "0 B/s";
     $k = 1024;
-    $sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s', 'ZB/s', 'YB/s'];
+    $sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s', 'TB/s', 'PB/s', 'EB/s', 'ZB', 'YB'];
     $i = floor(log($bytes_per_second, $k));
     return round($bytes_per_second / pow($k, $i), 1) . ' ' . $sizes[$i];
 }
@@ -155,7 +155,7 @@ $data['ram_used_gb'] = format_memory_gb($ram_used_bytes) . ' GB';
 // --- CPU Temperature ---
 $cpu_temp_celsius = null;
 $temp_paths = [
-    '/sys/class/thermal/thermal_zone0/temp',
+    '/sys/class/thermal/thermal_zone2/temp', // Changed from thermal_zone0
     '/sys/class/thermal/thermal_zone1/temp',
     '/sys/class/hwmon/hwmon0/temp1_input',
     '/etc/armbianmonitor/datasources/soctemp'
