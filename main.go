@@ -272,8 +272,8 @@ func getSystemStats() SystemStats {
 	usbDiskUsedBytes := uint64(0)
 	diskUsageUSB, err := disk.Usage(usbMountPoint)
 	if err != nil {
-		// Log as debug, as USB might not always be mounted
-		log.Printf("Info: Error getting disk usage for %s with gopsutil (USB might not be mounted): %v", usbMountPoint, err)
+		// Silencing this specific log as requested
+		// log.Printf("Info: Error getting disk usage for %s with gopsutil (USB might not be mounted): %v", usbMountPoint, err)
 	} else {
 		usbDiskTotalBytes = diskUsageUSB.Total
 		usbDiskUsedBytes = diskUsageUSB.Used
@@ -299,6 +299,9 @@ func getProcesses() []ProcessInfo {
 		log.Printf("Error getting processes with gopsutil: %v", err)
 		return processesInfo
 	}
+
+	mu.Lock() // Lock to protect prevProcessCPUTimes and prevProcessTimestamp
+	defer mu.Unlock()
 
 	currentProcessCPUTimes := make(map[int32]float64)
 
